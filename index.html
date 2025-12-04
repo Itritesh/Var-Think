@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>VAR THINK STUDIO | SINGULARITY</title>
     
     <!-- LIBRARIES -->
@@ -21,13 +21,36 @@
             --light-grey: #e0e0e0;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; cursor: none; }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             background-color: var(--bg);
             color: var(--text);
             font-family: 'Manrope', sans-serif;
             overflow-x: hidden;
+            width: 100%;
+            cursor: auto; /* Default cursor */
+        }
+
+        /* -----------------------
+           CURSOR LOGIC
+           ----------------------- */
+        @media (hover: hover) and (pointer: fine) {
+            body, a, button, .hover-trigger { cursor: none !important; }
+            #lens {
+                display: block !important;
+                position: fixed; top: 0; left: 0; width: 150px; height: 150px;
+                border-radius: 50%; border: 1px solid rgba(255,255,255,0.3);
+                background: rgba(255, 255, 255, 0.02);
+                backdrop-filter: invert(1) blur(2px);
+                pointer-events: none; z-index: 9999999;
+                mix-blend-mode: difference;
+            }
+            .hovered #lens { width: 50px; height: 50px; background: white; border: none; }
+        }
+
+        @media (hover: none), (pointer: coarse) {
+            #lens { display: none !important; }
         }
 
         /* -----------------------
@@ -38,20 +61,6 @@
             pointer-events: none; z-index: 999; opacity: 0.05;
             background: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
         }
-
-        #lens {
-            position: fixed; top: 0; left: 0; width: 150px; height: 150px;
-            border-radius: 50%; border: 1px solid rgba(255,255,255,0.3);
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: invert(1) blur(2px);
-            pointer-events: none; z-index: 10000;
-            transform: translate(-50%, -50%);
-            transition: width 0.3s, height 0.3s;
-            mix-blend-mode: difference;
-            display: none; /* Hidden on mobile initially via JS logic, shown on desktop */
-        }
-        @media (min-width: 768px) { #lens { display: block; } }
-        .hovered #lens { width: 40px; height: 40px; background: white; }
 
         #canvas-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
@@ -84,25 +93,34 @@
         }
 
         /* -----------------------
-           NAV
+           NAV (LOGO FIXED HERE)
            ----------------------- */
         nav {
             position: fixed; top: 0; width: 100%; padding: 40px 60px;
-            display: flex; justify-content: space-between; align-items: flex-start;
+            display: flex; justify-content: space-between; align-items: center;
             z-index: 100; mix-blend-mode: difference;
         }
-        .nav-logo-img { width: 250px; height: 170px; display: block; }
+
+        /* DESKTOP LOGO SIZE (PC) */
+        .nav-logo-img { 
+            width: 200px; /* INCREASED SIZE FOR PC */
+            height: auto; 
+            display: block; 
+            object-fit: contain;
+        }
+
+        .menu-text { font-family: 'Teko'; font-size: 1.5rem; white-space: nowrap; }
 
         /* -----------------------
            PART 1: HERO
            ----------------------- */
         .hero {
-            height: 134vh; position: relative; z-index: 10;
+            min-height: 100vh; height: auto;
+            position: relative; z-index: 10;
             display: flex; flex-direction: column; justify-content: center;
-            padding: 0 60px; overflow: hidden;
+            padding: 120px 60px 60px 60px; overflow: hidden;
         }
         
-        /* VIDEO BACKGROUND */
         .video-bg {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             object-fit: cover; z-index: -1; opacity: 0.6;
@@ -111,7 +129,7 @@
         }
 
         .huge-text {
-            font-family: 'Teko'; font-size: 14vw; line-height: 0.8;
+            font-family: 'Teko'; font-size: 14vw; line-height: 0.9;
             font-weight: 550; text-transform: uppercase;
             color: transparent; -webkit-text-stroke: 2px white;
             white-space: nowrap; position: relative;
@@ -152,10 +170,7 @@
             background: var(--light-grey); color: black;
             display: flex; align-items: center; position: relative; z-index: 20;
         }
-        
-        .team-container {
-            display: flex; padding-left: 100px; gap: 50px; width: 400%;
-        }
+        .team-container { display: flex; padding-left: 100px; gap: 50px; width: 400%; }
 
         .team-title-sticky {
             position: absolute; left: 60px; top: 50%; transform: translateY(-50%);
@@ -169,7 +184,6 @@
             transition: transform 0.3s; cursor: pointer; overflow: hidden;
         }
         .member-card:hover { transform: scale(1.05); z-index: 5; }
-        
         .member-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; filter: grayscale(100%); transition: 0.5s; }
         .member-card:hover .member-img { opacity: 1; filter: grayscale(0%); }
 
@@ -204,12 +218,12 @@
         .z-layer {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center; flex-direction: column;
-            opacity: 0; pointer-events: none; will-change: transform, opacity;
+            opacity: 0; pointer-events: none; will-change: transform, opacity; padding: 0 20px;
         }
         .z-title {
             font-family: 'Teko'; font-size: 15vw; text-align: center;
             text-transform: uppercase; line-height: 0.8; margin-bottom: 20px;
-            text-shadow: 0 0 50px rgba(255,255,255,0.1);
+            text-shadow: 0 0 50px rgba(255,255,255,0.1); white-space: nowrap;
         }
         .z-subtitle {
             font-size: 1.2rem; letter-spacing: 10px; text-transform: uppercase; 
@@ -238,8 +252,7 @@
 
         .contact-box {
             border: 1px solid white; padding: 60px 100px;
-            background: black; text-align: center;
-            width: 90%; max-width: 800px;
+            background: black; text-align: center; width: 90%; max-width: 800px;
         }
         .cta-btn {
             display: inline-block; margin-top: 30px; padding: 15px 40px;
@@ -261,41 +274,48 @@
            RESPONSIVE BREAKPOINTS
            ----------------------- */
         @media (max-width: 1024px) {
-            .huge-text { font-size: 18vw; }
+            .huge-text { font-size: 14vw; }
             .team-container { padding-left: 40px; }
             .member-card { width: 40vw; }
+            .nav-logo-img { width: 160px; } /* Tablet adjust */
         }
 
         @media (max-width: 768px) {
-            nav { padding: 20px; }
-            .nav-logo-img { width: 90px; } /* Smaller logo on mobile */
+            body { overflow-x: hidden; width: 100%; }
+            nav { padding: 20px; align-items: center; }
 
-            .hero { padding: 0 20px; }
-            .huge-text { font-size: 20vw; -webkit-text-stroke: 1px white; }
-            
-            .sub-hero { flex-direction: column; align-items: flex-start; }
-            .sh-right { margin-top: 20px; font-size: 0.8rem; }
+            /* MOBILE LOGO - KEPT SAME SIZE AS YOU LIKED (140px) */
+            .nav-logo-img { 
+                width: 140px; 
+                max-width: 45vw;
+            } 
+            .menu-text { font-size: 1.2rem; }
+
+            .hero { padding: 100px 20px 40px 20px; min-height: 100svh; justify-content: center; }
+            .huge-text { font-size: 12vw; -webkit-text-stroke: 1px white; line-height: 1; }
+            .sub-hero { flex-direction: column; align-items: flex-start; margin-top: 30px; }
+            .sh-right { margin-top: 15px; font-size: 0.9rem; width: 100%; }
 
             .dominance { padding: 80px 20px; }
-            .stats-grid { grid-template-columns: 1fr; gap: 40px; }
-            .stat-item h3 { font-size: 5rem; }
+            .stats-grid { grid-template-columns: 1fr; gap: 50px; }
+            .stat-item h3 { font-size: 4rem; } 
 
-            /* Horizontal Scroll Fixes for Mobile */
-            .team-title-sticky { font-size: 4rem; left: 20px; opacity: 0.5; z-index: 0; }
-            .team-container { width: 500%; padding-left: 20px; gap: 20px; }
-            .member-card { width: 85vw; height: 60vh; } /* Cards take full width on phone */
-            .member-details { transform: translateY(0); padding: 20px; } /* Always show details on mobile */
+            .team-title-sticky { font-size: 2.5rem; left: 20px; opacity: 0.5; top: 15%; }
+            .team-container { width: 600%; padding-left: 20px; gap: 20px; }
+            .member-card { width: 80vw; height: 55vh; }
+            .member-details { transform: translateY(0); padding: 20px; background: linear-gradient(to top, black 20%, transparent); } 
+            .member-img { opacity: 1; filter: grayscale(0%); }
 
-            /* Z-Scroll Fixes */
-            .z-title { font-size: 25vw; }
-            .z-text-block { font-size: 2rem; }
-            .z-gallery { flex-direction: column; gap: 20px; }
-            .z-card { width: 80vw; height: 300px; }
-            .z-info { transform: translateY(0); } /* Always show details */
+            .z-title { font-size: 12vw; white-space: normal; line-height: 0.9; }
+            .z-text-block { font-size: 1.5rem; padding: 0 10px; }
+            .z-subtitle { font-size: 0.8rem; letter-spacing: 3px; }
+            .z-gallery { flex-direction: column; gap: 30px; align-items: center; height: 60vh; overflow-y: auto; }
+            .z-card { width: 85vw; height: 350px; }
+            .z-info { transform: translateY(0); }
 
-            .contact-box { padding: 40px 20px; }
-            .contact-box h1 { font-size: 3rem; }
-            .cta-btn { font-size: 1.5rem; padding: 10px 30px; }
+            .contact-box { padding: 40px 20px; width: 95%; }
+            .contact-box h1 { font-size: 2.5rem; }
+            .cta-btn { font-size: 1.2rem; padding: 12px 25px; }
         }
 
     </style>
@@ -304,7 +324,6 @@
 
     <!-- PRELOADER -->
     <div id="preloader">
-        <!-- REPLACE THIS SRC WITH YOUR ACTUAL LOGO FILE IF LOCAL -->
         <img src="image/logo.png" alt="VAR THINK STUDIO" class="pre-logo">
         <div class="loader-bar"><div class="loader-fill"></div></div>
     </div>
@@ -319,15 +338,13 @@
     <!-- NAV -->
     <nav>
         <div class="logo">
-            <!-- UPDATED LOGO: Uses the image you provided -->
             <img src="image/logo.png" alt="VAR THINK STUDIO" class="nav-logo-img">
         </div>
-        <div class="hover-trigger" style="font-family: 'Teko'; font-size: 1.5rem;">[ MENU ]</div>
+        <div class="hover-trigger menu-text">[ MENU ]</div>
     </nav>
 
-    <!-- 1. HERO (APEX) -->
+    <!-- 1. HERO -->
     <section class="hero hover-trigger">
-        <!-- VIDEO BACKGROUND ADDED HERE -->
         <video class="video-bg" autoplay muted loop playsinline>
             <source src="black wite illusion.mp4" type="video/mp4">
         </video>
@@ -345,9 +362,9 @@
         </div>
     </section>
 
-    <!-- 2. RANKING & SERVICES -->
+    <!-- 2. RANKING -->
     <section class="dominance">
-        <h2 style="font-family: 'Teko'; font-size: 4rem; text-transform: uppercase;">Global Standard</h2>
+        <h2 style="font-family: 'Teko'; font-size: 3rem; text-transform: uppercase;">Global Standard</h2>
         <div style="height: 1px; width: 100%; background: #333; margin: 20px 0;"></div>
         
         <div class="stats-grid">
@@ -366,13 +383,12 @@
         </div>
     </section>
 
-    <!-- 3. TEAM HORIZONTAL SCROLL -->
+    <!-- 3. TEAM -->
     <div class="scroll-wrapper" style="overflow: hidden;">
         <section class="team-section" id="team">
             <div class="team-title-sticky">THE<br>SYNDICATE</div>
             
             <div class="team-container">
-                <!-- Member 1 -->
                 <div class="member-card hover-trigger" onclick="flashRedirect('Alex')">
                     <img src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?q=80&w=600&auto=format&fit=crop" class="member-img">
                     <div class="member-details">
@@ -381,7 +397,6 @@
                         <div class="m-role">The Visionary</div>
                     </div>
                 </div>
-                <!-- Member 2 -->
                 <div class="member-card hover-trigger" onclick="flashRedirect('Sarah')">
                     <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=600&auto=format&fit=crop" class="member-img">
                     <div class="member-details">
@@ -390,7 +405,6 @@
                         <div class="m-role">The Architect</div>
                     </div>
                 </div>
-                <!-- Member 3 -->
                 <div class="member-card hover-trigger" onclick="flashRedirect('Marcus')">
                     <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=600&auto=format&fit=crop" class="member-img">
                     <div class="member-details">
@@ -399,7 +413,6 @@
                         <div class="m-role">The Strategist</div>
                     </div>
                 </div>
-                <!-- Member 4 -->
                 <div class="member-card hover-trigger" onclick="flashRedirect('Elena')">
                     <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop" class="member-img">
                     <div class="member-details">
@@ -412,31 +425,25 @@
         </section>
     </div>
 
-    <!-- 4. TRANSITION TO DEPTH -->
+    <!-- 4. TRANSITION -->
     <div class="transition-zone">
-        <div class="transition-text">↓ ENTER THE SINGULARITY ↓</div>
+        <div class="transition-text" style="font-size: 1.5rem;">↓ ENTER THE SINGULARITY ↓</div>
     </div>
 
-    <!-- 5. THE Z-AXIS SECTION (Pinned) -->
+    <!-- 5. Z-AXIS -->
     <section class="z-axis-wrapper" id="singularity">
         <div class="z-stage">
-            
-            <!-- LAYER 1: WELCOME -->
             <div class="z-layer z-layer-1">
                 <div class="z-subtitle">System Breach Confirmed</div>
                 <div class="z-title">VAR THINK<br>STUDIO</div>
             </div>
-
-            <!-- LAYER 2: STATEMENT -->
             <div class="z-layer z-layer-2">
                 <div class="z-text-block">
                     We don't build websites.<br>
                     We construct <span class="highlight">Digital Monuments</span>.<br>
-                    <span style="font-size: 1.5rem; color: #888; font-family: 'Manrope'; display:block; margin-top:20px;">Beating the competition is irrelevant.</span>
+                    <span style="font-size: 1rem; color: #888; font-family: 'Manrope'; display:block; margin-top:20px;">Beating the competition is irrelevant.</span>
                 </div>
             </div>
-
-            <!-- LAYER 3: WORKS -->
             <div class="z-layer z-layer-3">
                 <div class="z-subtitle">Selected Archives</div>
                 <div class="z-gallery">
@@ -454,28 +461,23 @@
                     </div>
                 </div>
             </div>
-
-            <!-- LAYER 4: FINAL CTA -->
             <div class="z-layer z-layer-4">
                 <div class="contact-box hover-trigger">
-                    <h1 style="font-family: 'Teko'; font-size: 4rem; line-height: 1; color: white;">INITIATE PROTOCOL</h1>
+                    <h1 style="font-family: 'Teko'; font-size: 3rem; line-height: 1; color: white;">INITIATE PROTOCOL</h1>
                     <p style="color: #aaa; margin: 20px 0; font-family: 'Manrope';">Slots available: 2</p>
                     <a href="#" class="cta-btn" onclick="flashRedirect('Project Init')">BEGIN PROJECT</a>
                 </div>
             </div>
-
         </div>
     </section>
 
-    <!-- SPACER FOR POST-ANIMATION -->
+    <!-- SPACER -->
     <div style="height: 20vh; background: black;"></div>
 
     <script>
         gsap.registerPlugin(ScrollTrigger);
 
-        // ----------------------------------------------------
-        // 0. PRELOADER ANIMATION
-        // ----------------------------------------------------
+        // 0. PRELOADER
         window.onload = function() {
             const tl = gsap.timeline();
             tl.to(".loader-fill", { width: "100%", duration: 1.5, ease: "power2.inOut" })
@@ -483,30 +485,25 @@
               .from(".huge-text", { y: 100, opacity: 0, stagger: 0.2, duration: 1 }, "-=0.3");
         };
 
-        // ----------------------------------------------------
-        // 1. GLOBAL CURSOR (Desktop Only)
-        // ----------------------------------------------------
-        if (window.matchMedia("(min-width: 768px)").matches) {
-            const lens = document.getElementById('lens');
-            window.addEventListener('mousemove', (e) => {
-                gsap.to(lens, {
-                    x: e.clientX,
-                    y: e.clientY,
-                    duration: 0.1,
-                    ease: "power2.out"
-                });
+        // 1. CURSOR LOGIC
+        const lens = document.getElementById('lens');
+        window.addEventListener('mousemove', (e) => {
+            gsap.to(lens, {
+                x: e.clientX,
+                y: e.clientY,
+                xPercent: -50,
+                yPercent: -50,
+                duration: 0.1,
+                ease: "power2.out"
             });
-            document.querySelectorAll('.hover-trigger').forEach(t => {
-                t.addEventListener('mouseenter', () => document.body.classList.add('hovered'));
-                t.addEventListener('mouseleave', () => document.body.classList.remove('hovered'));
-            });
-        }
+        });
+        document.querySelectorAll('.hover-trigger').forEach(t => {
+            t.addEventListener('mouseenter', () => document.body.classList.add('hovered'));
+            t.addEventListener('mouseleave', () => document.body.classList.remove('hovered'));
+        });
 
-        // ----------------------------------------------------
-        // 2. HORIZONTAL SCROLL (SECTION 1)
-        // ----------------------------------------------------
+        // 2. HORIZONTAL SCROLL
         const teamContainer = document.querySelector(".team-container");
-
         let scrollTween = gsap.to(teamContainer, {
             x: () => -(teamContainer.scrollWidth - window.innerWidth),
             ease: "none",
@@ -519,9 +516,7 @@
             }
         });
 
-        // ----------------------------------------------------
-        // 3. Z-AXIS SCROLL (SECTION 2)
-        // ----------------------------------------------------
+        // 3. Z-AXIS SCROLL
         let zTl = gsap.timeline({
             scrollTrigger: {
                 trigger: ".z-axis-wrapper",
@@ -542,9 +537,7 @@
            .to(".z-layer-3", { scale: 3, opacity: 0, duration: 2, ease: "power2.in" })
            .fromTo(".z-layer-4", { scale: 0.2, opacity: 0 }, { scale: 1, opacity: 1, duration: 2 }, "-=1.5");
 
-        // ----------------------------------------------------
-        // 4. THREE.JS TUNNEL (Background)
-        // ----------------------------------------------------
+        // 4. THREE.JS TUNNEL
         const scene = new THREE.Scene();
         scene.fog = new THREE.FogExp2(0x000000, 0.002);
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -588,9 +581,6 @@
             ScrollTrigger.refresh();
         });
 
-        // ----------------------------------------------------
-        // 5. FLASH REDIRECT
-        // ----------------------------------------------------
         function flashRedirect(name) {
             const flash = document.querySelector('.flash-bang');
             flash.style.transform = "scaleY(1)";
@@ -606,5 +596,4 @@
         }
     </script>
 </body>
-
 </html>
