@@ -29,7 +29,7 @@
             font-family: 'Manrope', sans-serif;
             overflow-x: hidden;
             width: 100%;
-            cursor: auto; /* Default cursor */
+            cursor: auto; 
         }
 
         /* -----------------------
@@ -93,26 +93,124 @@
         }
 
         /* -----------------------
-           NAV (LOGO FIXED HERE)
+           NEW NAV BAR
            ----------------------- */
         nav {
-            position: fixed; top: 0; width: 100%; padding: 40px 60px;
-            display: flex; justify-content: space-between; align-items: center;
-            z-index: 100; mix-blend-mode: difference;
+            position: fixed; top: 0; left: 0; width: 100%; 
+            padding: 30px 50px;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            z-index: 1000; mix-blend-mode: exclusion;
+            pointer-events: none; /* Let clicks pass through empty space */
         }
-
-        /* DESKTOP LOGO SIZE (PC) */
-        .nav-logo-img { 
-            width: 200px; /* INCREASED SIZE FOR PC */
-            height: auto; 
-            display: block; 
-            object-fit: contain;
+        
+        .nav-logo-wrapper { pointer-events: auto; }
+        .nav-logo-img { width: 180px; height: auto; display: block; object-fit: contain; }
+        
+        /* The Menu Trigger Button */
+        .menu-trigger {
+            pointer-events: auto; cursor: pointer;
+            display: flex; flex-direction: column; align-items: flex-end; gap: 5px;
         }
-
-        .menu-text { font-family: 'Teko'; font-size: 1.5rem; white-space: nowrap; }
+        .trigger-text { font-family: 'Teko'; font-size: 1.8rem; line-height: 1; color: white; text-transform: uppercase; }
+        .trigger-bar {
+            width: 50px; height: 2px; background: white; 
+            transition: width 0.3s ease;
+        }
+        .menu-trigger:hover .trigger-bar { width: 80px; }
 
         /* -----------------------
-           PART 1: HERO
+           NEW MEGA MENU (DATA GRID)
+           ----------------------- */
+        .mega-menu {
+            position: fixed; inset: 0; 
+            background: #050505; 
+            z-index: 999;
+            display: flex;
+            clip-path: inset(0 0 100% 0); /* Hidden by default (shutter effect) */
+            transition: clip-path 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .mega-menu.active { clip-path: inset(0 0 0 0); }
+
+        /* DECORATIVE BACKGROUND GRID */
+        .menu-bg-grid {
+            position: absolute; inset: 0; pointer-events: none; opacity: 0.15;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.3) 1px, transparent 1px);
+            background-size: 100px 100px;
+        }
+
+        /* LAYOUT CONTAINERS */
+        .menu-content {
+            width: 100%; height: 100%;
+            display: flex;
+            position: relative; z-index: 2;
+        }
+
+        /* LEFT SIDE: MAIN NAV */
+        .menu-left {
+            flex: 6; /* 60% width */
+            border-right: 1px solid rgba(255,255,255,0.1);
+            display: flex; flex-direction: column; justify-content: center;
+            padding: 0 8vw; position: relative;
+        }
+
+        .nav-link-row {
+            display: flex; align-items: baseline; gap: 30px;
+            overflow: hidden; margin-bottom: 10px;
+        }
+        .nav-index { 
+            font-family: 'Manrope'; font-size: 1rem; color: #555; font-weight: 500; 
+            transform: translateY(-20px);
+        }
+        .nav-main-item {
+            font-family: 'Teko'; font-size: 7vw; line-height: 0.9;
+            color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.5);
+            text-transform: uppercase; cursor: pointer; transition: 0.4s;
+            position: relative;
+        }
+        .nav-main-item::before {
+            content: attr(data-label);
+            position: absolute; top: 0; left: 0; width: 0%; height: 100%;
+            color: #fff; -webkit-text-stroke: 0px; overflow: hidden;
+            transition: width 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+            border-right: 4px solid #fff;
+        }
+        .nav-main-item:hover { -webkit-text-stroke: 1px white; }
+        .nav-main-item:hover::before { width: 100%; }
+
+        /* RIGHT SIDE: OPERATIVES LIST */
+        .menu-right {
+            flex: 4; /* 40% width */
+            display: flex; flex-direction: column;
+            background: #0a0a0a;
+        }
+        .menu-right-header {
+            padding: 40px; border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-family: 'Manrope'; font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; color: #888;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .close-btn { color: white; cursor: pointer; font-family: 'Teko'; font-size: 1.5rem; }
+        
+        .operatives-list {
+            padding: 40px; overflow-y: auto; height: 100%;
+            display: grid; grid-template-columns: 1fr; gap: 15px;
+        }
+        .operatives-list::-webkit-scrollbar { width: 2px; }
+        .operatives-list::-webkit-scrollbar-thumb { background: #333; }
+
+        .op-link {
+            font-family: 'Teko'; font-size: 2rem; color: #666; 
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 5px;
+            cursor: pointer; transition: 0.3s;
+        }
+        .op-link span { font-size: 1rem; font-family: 'Manrope'; opacity: 0; transform: translateX(-10px); transition: 0.3s; color: white;}
+        .op-link:hover { color: white; padding-left: 15px; }
+        .op-link:hover span { opacity: 1; transform: translateX(0); }
+
+        /* -----------------------
+           HERO
            ----------------------- */
         .hero {
             min-height: 100vh; height: auto;
@@ -150,7 +248,7 @@
         .sh-right { max-width: 400px; font-size: 0.9rem; color: var(--grey); line-height: 1.5; }
 
         /* -----------------------
-           PART 2: DOMINANCE
+           DOMINANCE
            ----------------------- */
         .dominance {
             padding: 150px 60px; border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -163,14 +261,14 @@
         .stat-item p { color: var(--grey); text-transform: uppercase; letter-spacing: 1px; }
 
         /* -----------------------
-           PART 3: HORIZONTAL
+           TEAM SECTION
            ----------------------- */
         .team-section {
             height: 100vh; width: 100%; overflow: hidden;
             background: var(--light-grey); color: black;
             display: flex; align-items: center; position: relative; z-index: 20;
         }
-        .team-container { display: flex; padding-left: 100px; gap: 50px; width: 400%; }
+        .team-container { display: flex; padding-left: 100px; gap: 50px; width: max-content; }
 
         .team-title-sticky {
             position: absolute; left: 60px; top: 50%; transform: translateY(-50%);
@@ -205,7 +303,7 @@
         .transition-text { font-family: 'Teko'; font-size: 2rem; letter-spacing: 5px; color: #444; text-transform: uppercase; }
 
         /* -----------------------
-           PART 4: SINGULARITY (Z)
+           SINGULARITY (Z)
            ----------------------- */
         .z-axis-wrapper {
             position: relative; width: 100%; height: 100vh;
@@ -261,6 +359,7 @@
         }
         .cta-btn:hover { background: #333; color: white; }
 
+        /* FLASH BANG TRANSITION LAYER */
         .flash-bang {
             position: fixed; inset: 0; background: white; z-index: 99999;
             transform: scaleY(0); transform-origin: top; pointer-events: none;
@@ -274,23 +373,41 @@
            RESPONSIVE BREAKPOINTS
            ----------------------- */
         @media (max-width: 1024px) {
+            nav { padding: 20px 30px; }
+            .nav-main-item { font-size: 10vw; }
+            .menu-left { padding: 0 40px; }
             .huge-text { font-size: 14vw; }
             .team-container { padding-left: 40px; }
             .member-card { width: 40vw; }
-            .nav-logo-img { width: 160px; } /* Tablet adjust */
+            .nav-logo-img { width: 160px; } 
         }
 
         @media (max-width: 768px) {
-            body { overflow-x: hidden; width: 100%; }
+            /* NAVBAR MOBILE */
             nav { padding: 20px; align-items: center; }
+            .nav-logo-img { width: 140px; max-width: 45vw; }
+            .trigger-text { display: none; } /* Hide text, keep bars */
+            .menu-trigger { gap: 6px; }
+            .trigger-bar { width: 35px; height: 3px; }
 
-            /* MOBILE LOGO - KEPT SAME SIZE AS YOU LIKED (140px) */
-            .nav-logo-img { 
-                width: 140px; 
-                max-width: 45vw;
-            } 
-            .menu-text { font-size: 1.2rem; }
+            /* MENU MOBILE LAYOUT */
+            .menu-content { flex-direction: column; }
+            .menu-left {
+                flex: 0 0 auto; /* Auto height */
+                width: 100%; padding: 40px 20px;
+                border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+            .nav-link-row { gap: 15px; margin-bottom: 5px; }
+            .nav-index { font-size: 0.8rem; transform: translateY(-5px); }
+            .nav-main-item { font-size: 16vw; } /* Bigger text on mobile */
 
+            .menu-right { flex: 1; width: 100%; }
+            .menu-right-header { padding: 20px; }
+            .operatives-list { padding: 0 20px 40px 20px; }
+            .op-link { font-size: 1.6rem; }
+            
+            /* HERO & BODY */
+            body { overflow-x: hidden; width: 100%; }
             .hero { padding: 100px 20px 40px 20px; min-height: 100svh; justify-content: center; }
             .huge-text { font-size: 12vw; -webkit-text-stroke: 1px white; line-height: 1; }
             .sub-hero { flex-direction: column; align-items: flex-start; margin-top: 30px; }
@@ -301,7 +418,7 @@
             .stat-item h3 { font-size: 4rem; } 
 
             .team-title-sticky { font-size: 2.5rem; left: 20px; opacity: 0.5; top: 15%; }
-            .team-container { width: 600%; padding-left: 20px; gap: 20px; }
+            .team-container { padding-left: 20px; gap: 20px; }
             .member-card { width: 80vw; height: 55vh; }
             .member-details { transform: translateY(0); padding: 20px; background: linear-gradient(to top, black 20%, transparent); } 
             .member-img { opacity: 1; filter: grayscale(0%); }
@@ -335,18 +452,75 @@
     <div id="canvas-container"></div>
     <div class="progress-bar"></div>
 
-    <!-- NAV -->
+    <!-- 1. NEW FIXED NAV -->
     <nav>
-        <div class="logo">
+        <div class="nav-logo-wrapper hover-trigger">
             <img src="image/logo.png" alt="VAR THINK STUDIO" class="nav-logo-img">
         </div>
-        <div class="hover-trigger menu-text">[ MENU ]</div>
+        
+        <div class="menu-trigger hover-trigger" onclick="toggleMenu()">
+            <div class="trigger-text">// SYSTEM ACCESS</div>
+            <div class="trigger-bar"></div>
+            <div class="trigger-bar" style="width: 30px"></div>
+        </div>
     </nav>
+
+    <!-- 2. NEW HOLOGRAPHIC GRID MENU -->
+    <div class="mega-menu" id="megaMenu">
+        <!-- Background Grid -->
+        <div class="menu-bg-grid"></div>
+
+        <div class="menu-content">
+            <!-- LEFT: MAIN NAVIGATION -->
+            <div class="menu-left">
+                <div class="nav-link-row hover-trigger" onclick="toggleMenu();">
+                    <div class="nav-index">01</div>
+                    <div class="nav-main-item" data-label="INDEX" onclick="window.scrollTo(0,0)">INDEX</div>
+                </div>
+
+                <div class="nav-link-row hover-trigger" onclick="toggleMenu(); window.location.hash='team'">
+                    <div class="nav-index">02</div>
+                    <div class="nav-main-item" data-label="OPERATIVES">OPERATIVES</div>
+                </div>
+
+                <div class="nav-link-row hover-trigger" onclick="toggleMenu(); window.location.hash='singularity'">
+                    <div class="nav-index">03</div>
+                    <div class="nav-main-item" data-label="ARCHIVES">ARCHIVES</div>
+                </div>
+
+                <div class="nav-link-row hover-trigger" onclick="flashRedirect('alexander.html')">
+                    <div class="nav-index">04</div>
+                    <div class="nav-main-item" data-label="CONTACT">CONTACT</div>
+                </div>
+            </div>
+
+            <!-- RIGHT: OPERATIVES LIST -->
+            <div class="menu-right">
+                <div class="menu-right-header">
+                    <span>// SELECT OPERATIVE</span>
+                    <div class="close-btn hover-trigger" onclick="toggleMenu()">[ CLOSE X ]</div>
+                </div>
+                
+                <div class="operatives-list">
+                    <div class="op-link hover-trigger" onclick="flashRedirect('alexander.html')">Alexander <span>01</span></div>
+                    <div class="op-link hover-trigger" onclick="flashRedirect('alexander.html')">Sarah <span>02</span></div>
+                    <div class="op-link hover-trigger" onclick="flashRedirect('alexander.html')">Marcus <span>03</span></div>
+                    <div class="op-link hover-trigger" onclick="flashRedirect('alexander.html')">Elena <span>04</span></div>
+                    <div class="op-link hover-trigger" onclick="flashRedirect('alexander.html')">Victor <span>05</span></div>
+                    <div class="op-link hover-trigger" onclick="flashRedirect('alexander.html')">Yuki <span>06</span></div>
+                    <div class="op-link hover-trigger" onclick="flashRedirect('alexander.html')">Dimitri <span>07</span></div>
+                    <div class="op-link hover-trigger" onclick="flashRedirect('alexander.html')">Olivia <span>08</span></div>
+                    <div class="op-link hover-trigger" onclick="flashRedirect('alexander.html')">Kael <span>09</span></div>
+                    <div class="op-link hover-trigger" onclick="flashRedirect('alexander.html')">Nova <span>10</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- 1. HERO -->
     <section class="hero hover-trigger">
         <video class="video-bg" autoplay muted loop playsinline>
-            <source src="black wite illusion.mp4" type="video/mp4">
+            <source src="scope earth.mp4" type="video/mp4">
         </video>
 
         <div class="huge-text" data-text="VAR Think">VAR Think</div>
@@ -377,49 +551,67 @@
                 <p>Client Retention</p>
             </div>
             <div class="stat-item hover-trigger">
-                <h3>7</h3>
-                <p>Master Architects</p>
+                <h3>10</h3>
+                <p>Elite Operatives</p>
             </div>
         </div>
     </section>
 
-    <!-- 3. TEAM -->
+    <!-- 3. TEAM - 10 MEMBERS TOTAL -->
     <div class="scroll-wrapper" style="overflow: hidden;">
         <section class="team-section" id="team">
             <div class="team-title-sticky">THE<br>SYNDICATE</div>
             
             <div class="team-container">
-                <div class="member-card hover-trigger" onclick="flashRedirect('Alex')">
+                <!-- 1 -->
+                <div class="member-card hover-trigger" onclick="flashRedirect('alexander.html')">
                     <img src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?q=80&w=600&auto=format&fit=crop" class="member-img">
-                    <div class="member-details">
-                        <div class="m-num">01</div>
-                        <div class="m-name">Alexander</div>
-                        <div class="m-role">The Visionary</div>
-                    </div>
+                    <div class="member-details"><div class="m-num">01</div><div class="m-name">Alexander</div><div class="m-role">The Visionary</div></div>
                 </div>
-                <div class="member-card hover-trigger" onclick="flashRedirect('Sarah')">
+                <!-- 2 -->
+                <div class="member-card hover-trigger" onclick="flashRedirect('alexander.html')">
                     <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=600&auto=format&fit=crop" class="member-img">
-                    <div class="member-details">
-                        <div class="m-num">02</div>
-                        <div class="m-name">Sarah</div>
-                        <div class="m-role">The Architect</div>
-                    </div>
+                    <div class="member-details"><div class="m-num">02</div><div class="m-name">Sarah</div><div class="m-role">The Architect</div></div>
                 </div>
-                <div class="member-card hover-trigger" onclick="flashRedirect('Marcus')">
+                <!-- 3 -->
+                <div class="member-card hover-trigger" onclick="flashRedirect('alexander.html')">
                     <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=600&auto=format&fit=crop" class="member-img">
-                    <div class="member-details">
-                        <div class="m-num">03</div>
-                        <div class="m-name">Marcus</div>
-                        <div class="m-role">The Strategist</div>
-                    </div>
+                    <div class="member-details"><div class="m-num">03</div><div class="m-name">Marcus</div><div class="m-role">The Strategist</div></div>
                 </div>
-                <div class="member-card hover-trigger" onclick="flashRedirect('Elena')">
+                <!-- 4 -->
+                <div class="member-card hover-trigger" onclick="flashRedirect('alexander.html')">
                     <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop" class="member-img">
-                    <div class="member-details">
-                        <div class="m-num">04</div>
-                        <div class="m-name">Elena</div>
-                        <div class="m-role">The Designer</div>
-                    </div>
+                    <div class="member-details"><div class="m-num">04</div><div class="m-name">Elena</div><div class="m-role">The Designer</div></div>
+                </div>
+                <!-- 5 -->
+                <div class="member-card hover-trigger" onclick="flashRedirect('alexander.html')">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600&auto=format&fit=crop" class="member-img">
+                    <div class="member-details"><div class="m-num">05</div><div class="m-name">Victor</div><div class="m-role">The Coder</div></div>
+                </div>
+                <!-- 6 -->
+                <div class="member-card hover-trigger" onclick="flashRedirect('alexander.html')">
+                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=600&auto=format&fit=crop" class="member-img">
+                    <div class="member-details"><div class="m-num">06</div><div class="m-name">Yuki</div><div class="m-role">The Catalyst</div></div>
+                </div>
+                <!-- 7 -->
+                <div class="member-card hover-trigger" onclick="flashRedirect('alexander.html')">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=600&auto=format&fit=crop" class="member-img">
+                    <div class="member-details"><div class="m-num">07</div><div class="m-name">Dimitri</div><div class="m-role">The Ghost</div></div>
+                </div>
+                <!-- 8 -->
+                <div class="member-card hover-trigger" onclick="flashRedirect('alexander.html')">
+                    <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=600&auto=format&fit=crop" class="member-img">
+                    <div class="member-details"><div class="m-num">08</div><div class="m-name">Olivia</div><div class="m-role">The Scout</div></div>
+                </div>
+                <!-- 9 -->
+                <div class="member-card hover-trigger" onclick="flashRedirect('alexander.html')">
+                    <img src="https://images.unsplash.com/photo-1504257432389-52343af06ae3?q=80&w=600&auto=format&fit=crop" class="member-img">
+                    <div class="member-details"><div class="m-num">09</div><div class="m-name">Kael</div><div class="m-role">The Builder</div></div>
+                </div>
+                <!-- 10 -->
+                <div class="member-card hover-trigger" onclick="flashRedirect('alexander.html')">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=600&auto=format&fit=crop" class="member-img">
+                    <div class="member-details"><div class="m-num">10</div><div class="m-name">Nova</div><div class="m-role">The Oracle</div></div>
                 </div>
             </div>
         </section>
@@ -447,15 +639,15 @@
             <div class="z-layer z-layer-3">
                 <div class="z-subtitle">Selected Archives</div>
                 <div class="z-gallery">
-                    <div class="z-card hover-trigger">
+                    <div class="z-card hover-trigger" onclick="flashRedirect('alexander.html')">
                         <img src="https://images.unsplash.com/photo-1481487484168-9b930d5b7960?q=80&w=800&auto=format&fit=crop">
                         <div class="z-info"><h3>PROJECT AURA</h3></div>
                     </div>
-                    <div class="z-card hover-trigger">
+                    <div class="z-card hover-trigger" onclick="flashRedirect('alexander.html')">
                         <img src="https://images.unsplash.com/photo-1511447333015-45b65e60f6d5?q=80&w=800&auto=format&fit=crop">
                         <div class="z-info"><h3>VELVET SPACE</h3></div>
                     </div>
-                    <div class="z-card hover-trigger">
+                    <div class="z-card hover-trigger" onclick="flashRedirect('alexander.html')">
                         <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=800&auto=format&fit=crop">
                         <div class="z-info"><h3>CYBER CORE</h3></div>
                     </div>
@@ -465,7 +657,7 @@
                 <div class="contact-box hover-trigger">
                     <h1 style="font-family: 'Teko'; font-size: 3rem; line-height: 1; color: white;">INITIATE PROTOCOL</h1>
                     <p style="color: #aaa; margin: 20px 0; font-family: 'Manrope';">Slots available: 2</p>
-                    <a href="#" class="cta-btn" onclick="flashRedirect('Project Init')">BEGIN PROJECT</a>
+                    <a href="#" class="cta-btn" onclick="flashRedirect('alexander.html')">BEGIN PROJECT</a>
                 </div>
             </div>
         </div>
@@ -502,7 +694,7 @@
             t.addEventListener('mouseleave', () => document.body.classList.remove('hovered'));
         });
 
-        // 2. HORIZONTAL SCROLL
+        // 2. HORIZONTAL SCROLL (Calculates automatically for 10 items)
         const teamContainer = document.querySelector(".team-container");
         let scrollTween = gsap.to(teamContainer, {
             x: () => -(teamContainer.scrollWidth - window.innerWidth),
@@ -581,18 +773,38 @@
             ScrollTrigger.refresh();
         });
 
-        function flashRedirect(name) {
+        // 5. FLASH REDIRECT LOGIC
+        function flashRedirect(url) {
             const flash = document.querySelector('.flash-bang');
             flash.style.transform = "scaleY(1)";
-            flash.style.transition = "transform 0.1s ease-out";
+            flash.style.transition = "transform 0.4s cubic-bezier(0.65, 0, 0.35, 1)";
             setTimeout(() => {
-                alert(`ACCESSING ARCHIVES: ${name.toUpperCase()}...`);
-                flash.style.opacity = "0";
-                setTimeout(() => {
-                    flash.style.transform = "scaleY(0)";
-                    flash.style.opacity = "1";
-                }, 500);
-            }, 200);
+                window.location.href = url;
+            }, 400); 
+        }
+
+        // 6. NEW MENU TOGGLE LOGIC
+        function toggleMenu() {
+            const menu = document.getElementById('megaMenu');
+            menu.classList.toggle('active');
+            
+            if(menu.classList.contains('active')) {
+                // Animate Main Links (Slide Up)
+                gsap.fromTo(".nav-main-item", 
+                    { y: 100, opacity: 0 },
+                    { y: 0, opacity: 1, stagger: 0.1, duration: 0.8, ease: "power3.out", delay: 0.2 }
+                );
+                // Animate Index Numbers
+                gsap.fromTo(".nav-index", 
+                    { opacity: 0 },
+                    { opacity: 1, stagger: 0.1, duration: 0.8, delay: 0.3 }
+                );
+                // Animate Operative List (Slide In from right)
+                gsap.fromTo(".op-link", 
+                    { x: 50, opacity: 0 },
+                    { x: 0, opacity: 1, stagger: 0.03, duration: 0.5, ease: "power2.out", delay: 0.4 }
+                );
+            }
         }
     </script>
 </body>
