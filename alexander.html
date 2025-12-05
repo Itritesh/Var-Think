@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALEXANDER | DIGITAL PORTFOLIO</title>
+
+    <!-- LIBRARIES -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+
+    <!-- FONTS -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #050505;
+            --text: #ffffff;
+            --accent: #e0e0e0;
+            --padding-desktop: 5vw;
+            --padding-mobile: 6vw; /* Increased margin for mobile */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Manrope', sans-serif;
+            overflow-x: hidden;
+            width: 100%;
+        }
+
+        a { text-decoration: none; color: inherit; }
+        img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+        /* -----------------------
+           NAV
+           ----------------------- */
+        nav {
+            position: fixed; top: 0; left: 0; width: 100%; 
+            padding: 30px var(--padding-desktop);
+            display: flex; justify-content: space-between; align-items: center;
+            z-index: 1000;
+            mix-blend-mode: difference;
+        }
+        .logo { font-family: 'Syne'; font-weight: 800; font-size: 1.2rem; text-transform: uppercase; }
+        .nav-btn { 
+            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; 
+            border: 1px solid rgba(255,255,255,0.4); padding: 10px 20px; 
+            border-radius: 30px; transition: 0.3s;
+        }
+        .nav-btn:hover { background: white; color: black; }
+
+        /* -----------------------
+           HERO SECTION (KINETIC SPLIT)
+           ----------------------- */
+        .hero-container {
+            position: relative;
+            height: 250vh; /* Increased height so animation has more time to finish */
+            width: 100%;
+        }
+
+        .hero-sticky {
+            position: sticky; top: 0;
+            height: 100vh; width: 100%;
+            overflow: hidden;
+            display: flex; flex-direction: column; 
+            align-items: center; justify-content: center;
+            
+            /* UPDATED: Added padding so text never touches the edges */
+            padding-left: var(--padding-mobile);
+            padding-right: var(--padding-mobile);
+        }
+
+        /* The Background Showcase Image */
+        .hero-media {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 1;
+            transform: scale(0.6);
+            opacity: 0;
+            filter: brightness(0.6);
+            will-change: transform, opacity;
+        }
+
+        /* The Giant Text */
+        .hero-title-wrapper {
+            position: relative; z-index: 2;
+            display: flex; flex-direction: column; align-items: center;
+            mix-blend-mode: difference;
+            width: 100%; /* Ensure wrapper takes full width for centering */
+        }
+
+        .hero-title {
+            font-family: 'Syne'; font-weight: 800; 
+            
+            /* UPDATED: Slightly smaller Max font size to prevent overflow */
+            font-size: clamp(3rem, 13vw, 11rem); 
+            
+            line-height: 0.9; text-transform: uppercase;
+            text-align: center; white-space: nowrap;
+            will-change: transform;
+            width: 100%;
+        }
+        
+        .scroll-prompt {
+            position: absolute; bottom: 50px; 
+            text-transform: uppercase; font-size: 0.75rem; letter-spacing: 2px;
+            z-index: 10; opacity: 0.6;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(10px); }
+        }
+
+        /* -----------------------
+           PROJECTS LAYOUT (Sticky Side)
+           ----------------------- */
+        .work-section {
+            position: relative; width: 100%;
+            background: var(--bg); z-index: 10;
+            display: grid; 
+            grid-template-columns: 40% 60%;
+            padding-bottom: 10vh;
+        }
+
+        /* LEFT: STICKY INFO */
+        .txt-col { position: relative; }
+        
+        .sticky-wrapper {
+            position: sticky; top: 0; height: 100vh;
+            display: flex; flex-direction: column; justify-content: center;
+            padding-left: var(--padding-desktop); 
+            padding-right: 2vw;
+        }
+
+        .project-info {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            opacity: 0; 
+            transform: translateY(-40%);
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            pointer-events: none;
+            width: 80%;
+        }
+        
+        .project-info.active { 
+            opacity: 1; 
+            transform: translateY(-50%); 
+            pointer-events: auto; 
+        }
+
+        .p-meta { font-size: 0.8rem; color: #666; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 15px; display: block; font-weight: 700; }
+        .p-title { font-family: 'Syne'; font-size: 3.5rem; line-height: 1; font-weight: 700; margin-bottom: 20px; color: white; }
+        .p-desc { font-size: 1rem; color: #aaa; line-height: 1.6; margin-bottom: 30px; }
+        
+        .visit-btn {
+            padding: 12px 30px; border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50px; font-size: 0.8rem; text-transform: uppercase;
+            transition: 0.3s; display: inline-block; letter-spacing: 1px;
+        }
+        .visit-btn:hover { background: white; color: black; border-color: white; }
+
+        /* RIGHT: IMAGES */
+        .img-col {
+            padding: 10vh var(--padding-desktop) 10vh 0;
+            display: flex; flex-direction: column; gap: 15vh;
+        }
+
+        .gallery-item {
+            position: relative; width: 100%; height: 75vh;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .img-wrapper {
+            width: 100%; height: 100%;
+            overflow: hidden; border-radius: 4px; position: relative;
+            background: #111;
+        }
+
+        .img-wrapper img {
+            width: 100%; height: 120%;
+            object-fit: cover; opacity: 0.8; transition: opacity 0.5s;
+        }
+        .img-wrapper:hover img { opacity: 1; }
+
+        .mobile-content { display: none; }
+
+        /* -----------------------
+           RESPONSIVE (MOBILE)
+           ----------------------- */
+        @media (max-width: 1024px) {
+            
+            /* UPDATED: Increase padding on desktop breakpoint for safer edges */
+            .hero-sticky {
+                padding-left: 8vw;
+                padding-right: 8vw;
+            }
+
+            .hero-container { height: 180vh; }
+            .hero-title { font-size: 13vw; } 
+
+            .work-section { display: flex; flex-direction: column; padding-top: 0; }
+            .txt-col { display: none; }
+            
+            .img-col { padding: 40px 20px; gap: 80px; }
+            .gallery-item { height: auto; display: block; margin-bottom: 20px; }
+            .img-wrapper { height: 50vh; margin-bottom: 25px; }
+
+            .mobile-content { display: block; }
+            .m-meta { font-family: 'Syne'; font-size: 0.75rem; color: #666; margin-bottom: 8px; display: block; text-transform: uppercase; letter-spacing: 1px;}
+            .m-title { font-family: 'Syne'; font-size: 2rem; margin-bottom: 10px; line-height: 1.1; color: white; }
+            .m-desc { color: #999; font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px; }
+            .m-link { font-size: 0.8rem; text-decoration: underline; text-underline-offset: 4px; text-transform: uppercase; }
+        }
+
+        .footer { padding: 50px; text-align: center; border-top: 1px solid #222; color: #444; font-size: 0.75rem; text-transform: uppercase; }
+
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">Alexander</div>
+        <a href="index.html" class="nav-btn">Return Home</a>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <div class="hero-container">
+        <div class="hero-sticky">
+            
+            <!-- Background Image -->
+            <div class="hero-media">
+                <img src="https://images.unsplash.com/photo-1604871000636-074fa5117945?q=80&w=2400" alt="Showcase">
+            </div>
+
+            <!-- Text Wrapper -->
+            <div class="hero-title-wrapper">
+                <h1 class="hero-title t-1">Visual</h1>
+                <h1 class="hero-title t-2">Design</h1>
+            </div>
+
+            <div class="scroll-prompt">Scroll to Begin</div>
+
+        </div>
+    </div>
+
+
+    <!-- PROJECTS SECTION -->
+    <main class="work-section">
+        
+        <div class="txt-col">
+            <div class="sticky-wrapper">
+                
+                <div class="project-info active" id="text-1">
+                    <span class="p-meta">01 — Cybersecurity</span>
+                    <h2 class="p-title">Neon Vista</h2>
+                    <p class="p-desc">Rebranding for a high-end cybersecurity firm. We utilized liquid simulation to create a "glitch" aesthetic representing data flux.</p>
+                    <a href="#" class="visit-btn">Open Project</a>
+                </div>
+
+                <div class="project-info" id="text-2">
+                    <span class="p-meta">02 — Fintech</span>
+                    <h2 class="p-title">Void Walker</h2>
+                    <p class="p-desc">A dashboard for high-frequency traders. We implemented a high-contrast 'dark mode' UI that simplified decision making by 40%.</p>
+                    <a href="#" class="visit-btn">Open Project</a>
+                </div>
+
+                <div class="project-info" id="text-3">
+                    <span class="p-meta">03 — Fashion</span>
+                    <h2 class="p-title">Silk Road</h2>
+                    <p class="p-desc">Digital runway for Milan Fashion Week. WebGL cloth physics allowed users to interact with garments in real-time.</p>
+                    <a href="#" class="visit-btn">Open Project</a>
+                </div>
+
+                <div class="project-info" id="text-4">
+                    <span class="p-meta">04 — Architecture</span>
+                    <h2 class="p-title">Oculus</h2>
+                    <p class="p-desc">Immersive 3D architectural visualization for Dubai's newest skyscraper, featuring VR walkthroughs directly in the browser.</p>
+                    <a href="#" class="visit-btn">Open Project</a>
+                </div>
+
+                <div class="project-info" id="text-5">
+                    <span class="p-meta">05 — AI Tech</span>
+                    <h2 class="p-title">Sentience</h2>
+                    <p class="p-desc">Identity system for a Generative AI startup. The logo algorithmically generates new variations based on user input.</p>
+                    <a href="#" class="visit-btn">Open Project</a>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="img-col">
+            
+            <div class="gallery-item" data-text-id="text-1">
+                <a href="#" class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1600" class="parallax-img">
+                </a>
+                <div class="mobile-content">
+                    <span class="m-meta">01 / Cybersecurity</span>
+                    <h2 class="m-title">Neon Vista</h2>
+                    <p class="m-desc">Rebranding for a high-end cybersecurity firm using liquid simulation.</p>
+                    <a href="#" class="m-link">View Project</a>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-text-id="text-2">
+                <a href="#" class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1600" class="parallax-img">
+                </a>
+                <div class="mobile-content">
+                    <span class="m-meta">02 / Fintech</span>
+                    <h2 class="m-title">Void Walker</h2>
+                    <p class="m-desc">High-frequency trading dashboard designed for speed and clarity.</p>
+                    <a href="#" class="m-link">View Project</a>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-text-id="text-3">
+                <a href="#" class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1600" class="parallax-img">
+                </a>
+                <div class="mobile-content">
+                    <span class="m-meta">03 / Fashion</span>
+                    <h2 class="m-title">Silk Road</h2>
+                    <p class="m-desc">Digital runway featuring real-time WebGL cloth simulation.</p>
+                    <a href="#" class="m-link">View Project</a>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-text-id="text-4">
+                <a href="#" class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1486325212027-8081e485255e?q=80&w=1600" class="parallax-img">
+                </a>
+                <div class="mobile-content">
+                    <span class="m-meta">04 / Architecture</span>
+                    <h2 class="m-title">Oculus Tower</h2>
+                    <p class="m-desc">Immersive 3D architectural visualization.</p>
+                    <a href="#" class="m-link">View Project</a>
+                </div>
+            </div>
+
+            <div class="gallery-item" data-text-id="text-5">
+                <a href="#" class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=1600" class="parallax-img">
+                </a>
+                <div class="mobile-content">
+                    <span class="m-meta">05 / AI Tech</span>
+                    <h2 class="m-title">Sentience</h2>
+                    <p class="m-desc">Identity system for a Generative AI startup.</p>
+                    <a href="#" class="m-link">View Project</a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <div class="footer">
+        Alexander © 2024 — All Rights Reserved
+    </div>
+
+    <script>
+        // 1. Initialize Lenis (Smooth Scroll)
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            smooth: true
+        });
+
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+
+        // 2. GSAP ScrollTrigger Animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        // --- HERO ANIMATION (The "Split" Effect) ---
+        const tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: ".hero-container",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1
+            }
+        });
+
+        tl
+        // UPDATED: Increased movement range (150%) so text completely exits screen
+        .to(".t-1", { x: "-150%", y: "-150%", opacity: 0, duration: 1 }, 0) 
+        .to(".t-2", { x: "150%", y: "150%", opacity: 0, duration: 1 }, 0)  
+        .to(".hero-media", { 
+            scale: 1, 
+            opacity: 1,
+            filter: "brightness(1)" 
+        }, 0);
+
+
+        // --- PROJECT SECTION ANIMATIONS ---
+        
+        // Desktop Logic
+        if (window.innerWidth > 1024) {
+            const items = document.querySelectorAll('.gallery-item');
+            const infos = document.querySelectorAll('.project-info');
+
+            items.forEach((item) => {
+                const targetId = item.getAttribute('data-text-id');
+
+                // Text Switching
+                ScrollTrigger.create({
+                    trigger: item,
+                    start: "top 60%",
+                    end: "bottom 60%",
+                    onEnter: () => switchInfo(targetId),
+                    onEnterBack: () => switchInfo(targetId)
+                });
+
+                // Image Parallax
+                gsap.fromTo(item.querySelector('.parallax-img'),
+                    { y: "-10%" },
+                    { 
+                        y: "10%", 
+                        ease: "none", 
+                        scrollTrigger: { 
+                            trigger: item, 
+                            start: "top bottom", 
+                            end: "bottom top", 
+                            scrub: true 
+                        } 
+                    }
+                );
+            });
+
+            function switchInfo(id) {
+                infos.forEach(info => info.classList.remove('active'));
+                const target = document.getElementById(id);
+                if(target) target.classList.add('active');
+            }
+        }
+
+    </script>
+</body>
+</html>
